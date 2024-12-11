@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { registerUser, loginUser } = require('../controllers/authController');
+const { registerUser, loginUser, loginAdmin } = require('../controllers/authController');  // Import loginAdmin
 
 /**
  * @swagger
@@ -53,10 +53,10 @@ router.route('/register').post(registerUser);
  *           properties:
  *             email:
  *               type: string
- *               example: john@example.com
+ *               example: hussam.mamdouh@aiesec.net
  *             password:
  *               type: string
- *               example: password123
+ *               example: 12345678
  *     responses:
  *       200:
  *         description: Login successful, returns a token
@@ -64,5 +64,37 @@ router.route('/register').post(registerUser);
  *         description: Invalid email or password
  */
 router.route('/login').post(loginUser);
+
+/**
+ * @swagger
+ * /api/auth/admin-login:
+ *   post:
+ *     summary: Admin Login
+ *     description: Log in with admin email and password and receive a JWT token.
+ *     parameters:
+ *       - in: body
+ *         name: credentials
+ *         description: Admin credentials for login
+ *         schema:
+ *           type: object
+ *           required:
+ *             - email
+ *             - password
+ *           properties:
+ *             email:
+ *               type: string
+ *               example: shadymamdouh@gmail.com
+ *             password:
+ *               type: string
+ *               example: 12345678
+ *     responses:
+ *       200:
+ *         description: Admin login successful, returns an admin token
+ *       401:
+ *         description: Invalid email or password, or not an admin
+ *       403:
+ *         description: Unauthorized, user is not an admin
+ */
+router.route('/admin-login').post(loginAdmin);
 
 module.exports = router;
