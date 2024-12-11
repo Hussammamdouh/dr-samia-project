@@ -42,11 +42,20 @@ const Pricing = () => {
       <Typography
         variant="h3"
         align="center"
-        sx={{ fontWeight: "bold", mb: 4 }}
+        sx={{
+          fontWeight: "bold",
+          mb: 4,
+          color: "#333",
+          fontSize: { xs: "2.5rem", sm: "3rem" },
+        }}
       >
         Choose Your Plan
       </Typography>
-      <Typography variant="subtitle1" align="center" sx={{ mb: 6 }}>
+      <Typography
+        variant="subtitle1"
+        align="center"
+        sx={{ mb: 6, color: "#555" }}
+      >
         Select the best plan that suits your needs.
       </Typography>
 
@@ -58,26 +67,46 @@ const Pricing = () => {
               sx={{
                 textAlign: "center",
                 boxShadow: 3,
-                transition: "transform 0.3s",
-                "&:hover": { transform: "scale(1.05)" },
+                borderRadius: 2,
+                transition: "transform 0.3s ease-in-out",
+                "&:hover": {
+                  transform: "scale(1.05)",
+                  boxShadow: 6,
+                },
               }}
             >
               <CardContent>
+                {/* Plan Title */}
                 <Typography
                   variant="h5"
-                  sx={{ fontWeight: "bold", mb: 2, color: "#3f51b5" }}
+                  sx={{
+                    fontWeight: "bold",
+                    mb: 2,
+                    color: "#3f51b5", // Consistent brand color
+                  }}
                 >
                   {plan.title}
                 </Typography>
-                <Typography variant="h4" sx={{ fontWeight: "bold", mb: 2 }}>
+
+                {/* Plan Price */}
+                <Typography
+                  variant="h4"
+                  sx={{
+                    fontWeight: "bold",
+                    mb: 2,
+                    color: "#333",
+                  }}
+                >
                   {plan.price}
                 </Typography>
-                <Typography variant="body2" sx={{ mb: 3 }}>
+
+                {/* Billed Information */}
+                <Typography variant="body2" sx={{ mb: 3, color: "#777" }}>
                   Billed monthly. Cancel anytime.
                 </Typography>
 
                 {/* Features List */}
-                <Box>
+                <Box sx={{ mb: 3 }}>
                   {plan.features.map((feature, idx) => (
                     <Typography
                       key={idx}
@@ -87,6 +116,7 @@ const Pricing = () => {
                         display: "flex",
                         justifyContent: "center",
                         alignItems: "center",
+                        color: "#555",
                       }}
                     >
                       - {feature}
@@ -103,6 +133,12 @@ const Pricing = () => {
                     px: 4,
                     fontWeight: "bold",
                     borderRadius: "20px",
+                    textTransform: "none",
+                    "&:hover": {
+                      backgroundColor: "#e64a19",
+                      transform: "scale(1.05)",
+                      transition: "0.3s ease-in-out",
+                    },
                   }}
                 >
                   {plan.buttonText}

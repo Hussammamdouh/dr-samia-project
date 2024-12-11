@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const bcrypt = require('bcryptjs'); // <-- Ensure bcrypt is required
+const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
 const userSchema = new mongoose.Schema({
@@ -24,26 +24,21 @@ const userSchema = new mongoose.Schema({
   timestamps: true,
 });
 
-// Hash the password before saving
 userSchema.pre('save', async function(next) {
   if (!this.isModified('password')) {
-    return next(); // If password is not modified, skip hashing
+    return next();
   }
   
-  this.password = await bcrypt.hash(this.password, 10); // <-- Here you hash the password
+  this.password = await bcrypt.hash(this.password, 10);
   next();
 });
 
-// Compare the provided password with the hashed password
 userSchema.methods.matchPassword = async function(enteredPassword) {
   return await bcrypt.compare(enteredPassword, this.password);
 };
 
-// Generate JWT token for authentication
 userSchema.methods.generateAuthToken = function() {
-  return jwt.sign({ id: this._id, isAdmin: this.isAdmin }, process.env.JWT_SECRET, {
-    expiresIn: '30d',
-  });
+  return jwt.sign({ id: this._id, isAdmin: this.isAdmin }, process.env.JWT_SECRET, { expiresIn: '30d' });
 };
 
 const User = mongoose.model('User', userSchema);

@@ -1,22 +1,50 @@
 import React, { useState, useEffect } from 'react';
 import { Box, Typography, Button, Grid, Card, CardContent, CircularProgress } from '@mui/material';
 import { Link } from 'react-router-dom';
+import { styled } from '@mui/system';
+
+// Custom Styled Components for Card and Button
+const StyledCard = styled(Card)({
+  padding: '20px',
+  boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
+  borderRadius: '12px',
+});
+
+const StyledButton = styled(Button)({
+  backgroundColor: '#ff5722',  // Orange color for the button
+  color: 'white',
+  borderRadius: '8px',
+  '&:hover': {
+    backgroundColor: '#e64a19', // Darker shade on hover
+  },
+  padding: '12px 20px',
+  fontSize: '14px',
+  width: '100%',  // Make button full-width
+});
 
 const Cart = () => {
   const [cart, setCart] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // For simplicity, we'll assume the cart data is stored in localStorage
+    // Get cart data from localStorage
     const savedCart = JSON.parse(localStorage.getItem('cart')) || [];
     setCart(savedCart);
     setLoading(false);
   }, []);
 
   const handleRemoveFromCart = (id) => {
-    const updatedCart = cart.filter((item) => item.id !== id);
+    const updatedCart = cart.filter((item) => item._id !== id);
     setCart(updatedCart);
-    localStorage.setItem('cart', JSON.stringify(updatedCart));
+    localStorage.setItem('cart', JSON.stringify(updatedCart)); // Update localStorage
+  };
+
+  const handleQuantityChange = (id, quantity) => {
+    const updatedCart = cart.map((item) =>
+      item._id === id ? { ...item, quantity: quantity } : item
+    );
+    setCart(updatedCart);
+    localStorage.setItem('cart', JSON.stringify(updatedCart)); // Update localStorage
   };
 
   const calculateTotal = () => {
@@ -42,29 +70,50 @@ const Cart = () => {
   return (
     <Grid container spacing={3}>
       {cart.map((item) => (
-        <Grid item xs={12} sm={6} md={4} key={item.id}>
-          <Card>
+        <Grid item xs={12} sm={6} md={4} key={item._id}>
+          <StyledCard>
             <CardContent>
-              <Typography variant="h6">{item.name}</Typography>
-              <Typography variant="body2">${item.price}</Typography>
-              <Typography variant="body2">Quantity: {item.quantity}</Typography>
-              <Button
+              <Typography variant="h6" sx={{ fontFamily: 'Poppins', fontWeight: '600' }}>
+                {item.name}
+              </Typography>
+              <Typography variant="body2" sx={{ color: '#757575', marginBottom: '10px' }}>
+                ${item.price}
+              </Typography>
+              <Typography variant="body2" sx={{ marginBottom: '15px' }}>
+                Quantity:
+                <input
+                  type="number"
+                  value={item.quantity}
+                  min="1"
+                  onChange={(e) =>
+                    handleQuantityChange(item._id, parseInt(e.target.value))
+                  }
+                  style={{
+                    width: '60px',
+                    marginLeft: '10px',
+                    padding: '5px',
+                    borderRadius: '8px',
+                    border: '1px solid #ccc',
+                    textAlign: 'center',
+                  }}
+                />
+              </Typography>
+              <StyledButton
                 variant="contained"
                 color="secondary"
-                onClick={() => handleRemoveFromCart(item.id)}
-                sx={{ marginTop: 2 }}
+                onClick={() => handleRemoveFromCart(item._id)}
               >
                 Remove from Cart
-              </Button>
+              </StyledButton>
             </CardContent>
-          </Card>
+          </StyledCard>
         </Grid>
       ))}
-      <Box sx={{ marginTop: 4 }}>
+      <Box sx={{ marginTop: 4, textAlign: 'center', width: '100%' }}>
         <Typography variant="h6">Total: ${calculateTotal()}</Typography>
-        <Button variant="contained" color="primary" component={Link} to="/checkout">
+        <StyledButton component={Link} to="/checkout" sx={{ marginTop: 2 }}>
           Proceed to Checkout
-        </Button>
+        </StyledButton>
       </Box>
     </Grid>
   );
